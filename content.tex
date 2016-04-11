@@ -96,19 +96,18 @@ Unity's scripting system is quite powerful, each game object usually has many di
 \begin{minted}{csharp}
 public class UsingOtherComponents : MonoBehaviour
 {
-public GameObject otherGameObject;
-
-
-private AnotherScript anotherScript;
-private YetAnotherScript yetAnotherScript;
-private BoxCollider boxCol;
-
-
-void Awake ()
-{
-anotherScript = GetComponent<AnotherScript>();
-yetAnotherScript = otherGameObject.GetComponent<YetAnotherScript>();
-boxCol = otherGameObject.GetComponent<BoxCollider>();
+	public GameObject otherGameObject;
+	
+	private AnotherScript anotherScript;
+	private YetAnotherScript yetAnotherScript;
+	private BoxCollider boxCol;
+	
+	void Awake ()
+	{
+		anotherScript = GetComponent<AnotherScript>();
+		yetAnotherScript = otherGameObject.GetComponent<YetAnotherScript>();
+		boxCol = otherGameObject.GetComponent<BoxCollider>();
+	}
 }
 \end{minted}
 
@@ -159,6 +158,27 @@ catch (UnityException e)
 \end{minted}
 
 \chapter{System Design}
+In this section of the document I'll cover the overall design and implementation of the game with help from UML diagrams to visualize the structure. Throughout this project I've had an object orientated design in mind, but in some cases I've done away with normal design principles for certain areas of the project. Unity's component structure requires scripts to be written slightly different to the normal compose and delegate structure of traditional OO program design ideas. Unity's developers encourage use of the 'GetComponent' method of acquiring new instances of objects and scripts. Because of this variables inside of scripts usually will contain many 'public' access type variables and objects instances.
+\subsection{Game Controller Design}
+The game controller class is quite an important area in the software design structure. It handles most of the main game control variables and object instances that are used throughout the software class structure. Another important class called 'CheckGC' basically checks at run if an instance of the game controller is present and valid, if no instance is found for some reason then one is created. The game itself can simply not function without one instantiated.
+
+\begin{figure}[!ht]
+	\caption{UML Diagram GC}
+	\centering
+	\includegraphics{img/gc_uml.png}
+\end{figure}
+
+As you can see I've included the different connections or relationships between these classes. The 'GameController' class fully composes each class found in the design image structure. Classes dependent on the variables inside of the 'GameController', access them through the use of a single static instance called 'instance' and will have it's variable 'set' parameter initialized to private. This will prevent outside classes from mishandling the variable and screwing up the game instance.
+\subsection{Animal Controller Design}
+Animals in the game require some form of behaviour and movement. The following UML diagram shows the basic aggregation relationship between the 'Cow' and 'CowController' classes. Most of the animation and movement logic is contained within the 'CowController' class, also a simple state machine can be found in this class as each cow object thats instantiated is essentially given its own thread and freedom in the game world.
+
+\begin{figure}[!ht]
+	\caption{UML Diagram CC}
+	\centering
+	\includegraphics{img/cow_uml.png}
+\end{figure}
+
+To be continued...
 
 \begin{itemize}
 \item Architecture, UML etc. An overview of the different components of the system. Diagrams etc… Screen shots etc.
@@ -178,7 +198,11 @@ Unity has a number of different tools available to diagnose bottlenecks and fram
 \end{itemize}
 
 \chapter{Conclusion}
-About three pages.
+Throughout this project I've learned quite a lot about game development, to only not brain storm ideas of gameplay but to implement it into a real project. I'll admit that the game is still its early stages of development and does not provide any sort of solid storyline or dialog, it mainly gives you the general idea of what the game is about. During its development stages I was grasping the tools and features available in Unity, if I were to restart the project tomorrow I would probably go about designing and implementing the game with a completely different method and approach.
+
+During the implementation stage of the project I've learned a great deal about the Unity SDK. Everything from the lighting systems to audio components, game development within Unity quite enjoyable experience. With its simple drag and drop features, level creation and environment setup time is reduced considerably allowing developers to quickly prototype ideas and gameplay features.
+
+Debugging in Unity is difficult to perform, especially when trying to figure out frame rate and performance issues. The included software IDE is a bit crude and flaky at times but it does perform tasks such as line breaking and remote debugging quite well without issue. 
 
 \begin{itemize}
 \item Briefly summarize your context and objectives (a few lines).
