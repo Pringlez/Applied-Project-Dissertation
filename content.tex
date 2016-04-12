@@ -104,9 +104,9 @@ public class UsingOtherComponents : MonoBehaviour
 	
 	void Awake ()
 	{
-		anotherScript = GetComponent<AnotherScript>();
-		yetAnotherScript = otherGameObject.GetComponent<YetAnotherScript>();
-		boxCol = otherGameObject.GetComponent<BoxCollider>();
+	  anotherScript = GetComponent<AnotherScript>();
+	  yetAnotherScript = otherGameObject.GetComponent<YetAnotherScript>();
+	  boxCol = otherGameObject.GetComponent<BoxCollider>();
 	}
 }
 \end{minted}
@@ -116,6 +116,7 @@ The JavaScript like language is other option when implementing your game control
 
 \subsection{Audio}
 The audio system in Unity gives the developer complete control over how sounds are emitted by objects and heard by listeners. A game object with a sound component can attach a sound file to itself and play it with a degree of intensity and volume level. These sounds are picked up by 'Listener' components, which are usually attached to player controlled game objects. Sound can be emitted from audio sources either in a 2D or 3D form. Sound emitted in the 2D form is not usually used in 3D games as the sound has no distance fade control like 3D emitted sound contains. The fade distances are quite useful in simulating realistic ambient sounds effects.
+I’ve sourced a lot of sound effects from various places, all royalty free of course. To name a few sources, 'SoundCloud', 'FreeSound' and other various content providers on the Unity assets store.
 
 \subsection{User Interface}
 http://docs.unity3d.com/Manual/UICanvas.html
@@ -170,7 +171,7 @@ The game controller class is quite an important area in the software design stru
 
 As you can see I've included the different connections or relationships between these classes. The 'GameController' class fully composes each class found in the design image structure. Classes dependent on the variables inside of the 'GameController', access them through the use of a single static instance called 'instance' and will have it's variable 'set' parameter initialized to private. This will prevent outside classes from mishandling the variable and screwing up the game instance.
 \subsection{Animal Controller Design}
-Animals in the game require some form of behaviour and movement. The following UML diagram shows the basic aggregation relationship between the 'Cow' and 'CowController' classes. Most of the animation and movement logic is contained within the 'CowController' class, also a simple state machine can be found in this class as each cow object thats instantiated is essentially given its own thread and freedom in the game world.
+Animals in the game require some form of behaviour and movement. The following UML diagram shows the basic aggregation relationship between the 'Cow' and 'CowController' classes. All of the animation and movement logic is contained within the 'CowController' class, also a simple state machine can be found in this class, because each cow object thats instantiated is essentially given its own thread and freedom in the game world. This state machine basically allows the individual animals in game to move and play specific animations when required too.
 
 \begin{figure}[!ht]
 	\caption{UML Diagram CC}
@@ -178,24 +179,17 @@ Animals in the game require some form of behaviour and movement. The following U
 	\includegraphics{img/cow_uml.png}
 \end{figure}
 
-To be continued...
-
-\begin{itemize}
-\item Architecture, UML etc. An overview of the different components of the system. Diagrams etc… Screen shots etc.
-\end{itemize}
+The controller class also contains logic for a simple enough path finding algorithm that utilizes a Unity component called 'Raycasts' to detect objects around itself to avoid them and continue to a specific coordinate in the game world. I'm not sure if this really classifies as 'AI', but however the game animal object does attempt to seek the shortest path to the location specified. If the animal fails to find a route to the specific location it re-traces its steps to find another route.
+This class also contains some control logic for the UI interface to display the correct information to the player when selected. This logic also controls the main camera view and translate it's position smoothly from one point to another without any glitching or laggy movement.
 
 \chapter{System Evaluation}
 Testing is probably the most important task of any software project, without testing, programmers could introduce more bugs into the application when fixing or maintaining sections of the source code. It's important to testing each section of application before signing off and releasing a new version of the program. Usually some form of automated testing is written to handle different classes and their subroutines to make sure nothing gets effected from the latest changes in the program. Unit testing is one such form that allows developers continually test as they work. The project I'm currently working does support unit testing, so long as I keep C-Sharp as my main scripting language.
 \subsection{Optimizing Graphics Performance}
 Optimizing a game for the mobile platform is important task for an game developer, especially when dealing with the problem of limited resources.
 Unity has a number of different tools available to diagnose bottlenecks and frame rate problems. The Unity 'Profiler Window' allows you see exactly whats using resources. It also displays how many draw calls are being requested for the GPU and how many CPU cycles required to the run various areas of your game like collision detection, object physics and other CPU intensive calculations. I've used this tool to monitor the amount of resources over the project's development, interestingly enough Unity handles optimizations quite well, I've read that the render engine bundles similar textures into single draw calls reducing the load on a GPU. Even though I'm using relatively basic textures and models in my game, I still worry about frame rate problems, because every new object added to the game scene reduces the performance levels, I aim to target as many mobile devices as possible. The profiler displays data from the game in a timeline, and allows you to see which frames spike. The spikes signify an area of interest you need look into and inspect. The specific frames in these spikes areas in the graph need to be analyzed and debugged to see what component of the game is bottlenecking the application.
-
-\begin{itemize}
-\item Prove that your software is robust. How? Testing etc. 
-\item Use performance benchmarks (space and time) if algorithmic.
-\item Measure the outcomes / outputs of your system / software against objectives from the Introduction.
-\item Highlight any limitations or opportunities in your approach or technologies used.
-\end{itemize}
+\subsection{Testing Hardware}
+Mobile hardware ranges quite a lot when you starting talking about all the different generations of iPhones and Android devices that released to the consumer market of the past few years. While the Unity game engine allows you to port too many different platforms like PlayStation and Xbox, I’ve been focusing my attention on the Android platform. This platform can present game development with a couple of problems, one would be the API level. Over the years different versions of Android all the way from 1.5 to 6.0 presents one major problem to the developer. What API level do I develop for?, Unity thankfully handles this problem by allowing the developer to choose the lowest API level required to run the game.
+Development hardware consisted of my own personal collection of Android devices, in all different screen sizes and API level versions. It’s quite simple to enable debugging on Android smartphones and tablet devices, the following method usually only applies to later models. Running an unsigned compiled APK file requires you to unlock the phone into developer mode, go into settings and navigate to the section 'About' and from there you should see an option for 'Software Information' or something similar, then 'More' if available and finally hit 'Build Number' seven times. Before I can build project and compile the source into APK file, I first must set or create the “keystore” file. Read more about the file here. It’s basically signing certificate that must be included with project when submitting applications to the Google play store. Also any incremental updates that proceed must also include this special file when building the project before submitting to the store.
 
 \chapter{Conclusion}
 Throughout this project I've learned quite a lot about game development, to only not brain storm ideas of gameplay but to implement it into a real project. I'll admit that the game is still its early stages of development and does not provide any sort of solid storyline or dialog, it mainly gives you the general idea of what the game is about. During its development stages I was grasping the tools and features available in Unity, if I were to restart the project tomorrow I would probably go about designing and implementing the game with a completely different method and approach.
