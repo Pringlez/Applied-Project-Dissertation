@@ -96,65 +96,81 @@ Unity's scripting system is quite powerful, each game object usually has many di
 \begin{minted}{csharp}
 public class UsingOtherComponents : MonoBehaviour
 {
-	public GameObject otherGameObject;
-	
-	private AnotherScript anotherScript;
-	private YetAnotherScript yetAnotherScript;
-	private BoxCollider boxCol;
-	
-	void Awake ()
-	{
-	  anotherScript = GetComponent<AnotherScript>();
-	  yetAnotherScript = otherGameObject.GetComponent<YetAnotherScript>();
-	  boxCol = otherGameObject.GetComponent<BoxCollider>();
-	}
+  public GameObject otherGameObject;
+
+  private AnotherScript anotherScript;
+  private YetAnotherScript yetAnotherScript;
+  private BoxCollider boxCol;
+
+  void Awake ()
+  {
+    anotherScript = GetComponent<AnotherScript>();
+    yetAnotherScript = otherGameObject.GetComponent<YetAnotherScript>();
+    boxCol = otherGameObject.GetComponent<BoxCollider>();
+  }
 }
 \end{minted}
 
 Unity supports two different languages natively, C-Sharp and a JavaScript like language they call UnityScript. The .NET framework provides a powerful, stable and dependable foundation to your project's script writing. I believe is far easier to use an object orientated language for game development projects like the one I'm undertaking, as sections of project can be split among teams of programmers. 
 The JavaScript like language is other option when implementing your game control logic, I would argue against using this language because in the long term adding new features and maintaining the source would become quite difficult as the complexity and size of the overall project expands.
+\subsection{Script Behaviors}
+One important aspect to be aware about when developing in the Unity SDK is that each script created, by default inherits the 'MonoBehaviour' class. This class contains special methods that get called at specific times and events at runtime. For example, when the game becomes minimized to the background, a method named 'OnDisable' gets called before the application gets pushed to the background. I've used this method call to save the current state of the game to make sure player data is preserved if for instance the Android operating system closes the application. Similar methods exist like the 'OnEnable' is called within scripts when the application resumes for a suspended state, which is useful when restoring data thats lost when the application gets suspended.
+The 'Awake' script behavior is used to initialize variables or any game state controls before the game starts and is only called once throughout it's lifetime instance. When all other objects have been initialized, the 'Awake' method is called so objects can safely communicate with one another. For example, its only possible to find other objects or query them when fully initialized. Each game object enabled with scripts using the 'Awake' method are all called randomly. Its recommended by the Unity developers to use this functionality to setup references between scripts, and then use the 'Start' behavior to pass information from the script to subsequent scripts. 'Awake' method behaviors are always called before any 'Start' methods behaviors. Similar to the 'Awake' method, the 'Start' function is called once throughout the script's lifetime instance. It may not be called one the same frame as the 'Awake' behavior. When objects are instantiated at runtime, their 'Awake' method gets called after their 'Start' function. An example script with both the 'Start' and 'Awake' method implementations.
+
+\begin{minted}{csharp}
+public class ExampleClass : MonoBehaviour {
+  private GameObject target;
+  
+  void Start() {
+    target = GameObject.FindWithTag("Player");
+  }
+  
+  void Awake() {
+    Debug.Log("Target name: " + target.name);
+  }
+}
+\end{minted}
+
+Theres many other types of behaviors that get fired at certain times, such as 'OnGUI', 'Update', 'FixedUpdate' and 'OnDestroy', plus many more are listed on the Unity docs reference.
+
+http://docs.unity3d.com/ScriptReference/MonoBehaviour.html
 
 \subsection{Audio}
 The audio system in Unity gives the developer complete control over how sounds are emitted by objects and heard by listeners. A game object with a sound component can attach a sound file to itself and play it with a degree of intensity and volume level. These sounds are picked up by 'Listener' components, which are usually attached to player controlled game objects. Sound can be emitted from audio sources either in a 2D or 3D form. Sound emitted in the 2D form is not usually used in 3D games as the sound has no distance fade control like 3D emitted sound contains. The fade distances are quite useful in simulating realistic ambient sounds effects.
 I’ve sourced a lot of sound effects from various places, all royalty free of course. To name a few sources, 'SoundCloud', 'FreeSound' and other various content providers on the Unity assets store.
 
 \subsection{User Interface}
-http://docs.unity3d.com/Manual/UICanvas.html
+The user interface is an important feature of any game, its critical to construct an efficient UI that gives the player a good impression of your game. UI elements in Unity are drawn upon a 'Canvas' component, and are drawn on screen in the same order as they appear in the hierarchy. If two elements overlap, the latest element drawn will sit on top of the other element. These 'Canvas' components have a special render mode setting, developers must choose one of these settings to display their GUI elements on screen. The render mode can either be set to screen space or world space. The 'Screen Space - Overlay' option places UI elements on top of the rendering scene, this allows UI components to resized automatically. While the 'Screen Space - Camera' option places the canvas a certain distance away from the main camera position. The UI elements are rendered by this component, which means it's settings affect the appearance of these elements and must be taken into account when developing the UI dimensions. If for instance the camera is set to 'Perspective', the UI elements will be render with a view that can be manipulated by the camera's field of view. If the camera or screen changes it's resolution, then the canvas will automatically resize itself and the elements drawn within it. The other rendering option available is the 'World Space' view, it displays UI elements with a 3D placement. Its handy for developers to make the user interface feel part of the world more then just being rendered on screen., these UI are sometimes called a "diegetic interface". 
 
-\begin{itemize}
-\item Describe each of the technologies you used at a conceptual level. Standards, Database Model (e.g. MongoDB, CouchDB), XMl, WSDL, JSON, JAXP.
-\item Use references (IEEE format, e.g. [1]), Books, Papers, URLs (timestamp) – sources should be authoritative. 
-\end{itemize}
-
-\section{C-Sharp Language}
+\section{Programming Language}
 The Unity game engine utilizes the C-Sharp programming language. Backed by the latest .NET 4.6 framework, developers can take full advantage of the powerful and stable underlining libraries. 
 
-The following sample is from the game controller class, which allows the player data to be saved using serialization. 
+The following sample is from the game controller class, which allows the player data to be saved using serialization.
 
 Saving the Player's Data to File
 \begin{minted}{csharp}
 try
 {
-	FileStream file;
-	BinaryFormatter bf = new BinaryFormatter();
-	
-	// Save player data
-	file = File.Open(Application.persistentDataPath + 
-		"/player.dat", FileMode.OpenOrCreate);
-	bf.Serialize(file, _instance.player);
-	file.Close();
-	
-	// Save cow data
-	file = File.Open(Application.persistentDataPath + 
-		"/cows.dat", FileMode.OpenOrCreate);
-	bf.Serialize(file, _instance.cows);
-	file.Close();
-	
-	Debug.Log ("Saving!");
+  FileStream file;
+  BinaryFormatter bf = new BinaryFormatter();
+
+  // Save player data
+  file = File.Open(Application.persistentDataPath + 
+	  "/player.dat", FileMode.OpenOrCreate);
+  bf.Serialize(file, _instance.player);
+  file.Close();
+
+  // Save cow data
+  file = File.Open(Application.persistentDataPath + 
+	  "/cows.dat", FileMode.OpenOrCreate);
+  bf.Serialize(file, _instance.cows);
+  file.Close();
+
+  Debug.Log ("Saving!");
 }
 catch (UnityException e)
 {
-	Debug.Log("Saving Failed! - " + e);
+  Debug.Log("Saving Failed! - " + e);
 }
 \end{minted}
 
@@ -196,10 +212,17 @@ Throughout this project I've learned quite a lot about game development, to only
 
 During the implementation stage of the project I've learned a great deal about the Unity SDK. Everything from the lighting systems to audio components, game development within Unity quite enjoyable experience. With its simple drag and drop features, level creation and environment setup time is reduced considerably allowing developers to quickly prototype ideas and gameplay features.
 
-Debugging in Unity is difficult to perform, especially when trying to figure out frame rate and performance issues. The included software IDE is a bit crude and flaky at times but it does perform tasks such as line breaking and remote debugging quite well without issue. 
+Debugging in Unity was quite difficult to perform, especially when trying to figure out frame rate and performance issues. The included software IDE is a bit crude and flaky at times but it does perform tasks such as line breaking and remote debugging quite well without issue. The Android 'Logcat' tool has been extremely helpful throughout the project's development. It allows developers to remotely debug devices by observing the output logs from applications running. 
+
+I believe the game has potential to grow and develop into more than just another farm simulator game. From an education point of view the game could teach kids more about farm animals and how to properly take care them. Helpful tips and information could be displayed on screen on occasion to progressively teach the player about each animal as they play.
+List of other ideas:
+\begin{itemize}
+\item Gameplay features like private sales between the player and NPC's in-game could be an aspect to implement later in development, private sales between farmers take place occasionally. 
+\item Multiplayer support may be included later in the project, which means likely that player chat, trading between players could be features implemented afterwards. 
+\end{itemize}
+Overall the game should be quite basic at first with more features being added to the gameplay over time. To cap off the project concept, it must have a cartoony feel and look to the game. I believe this will make it more welcoming to all ages, young or old.
 
 \begin{itemize}
 \item Briefly summarize your context and objectives (a few lines).
 \item Highlight your findings from the evaluation section / chapter and any opportunities identified.
 \end{itemize}
-
