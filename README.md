@@ -1,7 +1,12 @@
-# Final Year Project Template
-##### GMIT Software Development
+# Final Year Project
+#### GMIT Software Development
+##### John Walsh - G00299626
+Final year project dissertation report, written using LaTex / TeXstudio.
 
-To use this, you should install [TeX Live](https://www.tug.org/texlive/), [TeXstudio](http://www.texstudio.org/) and [Pygments](http://pygments.org/download/) (which requires Python).
+##### LaTex Template Source
+The document follows a specific template from GMIT's computing department, it can be found [here.](https://github.com/GMIT-Catering/final-year-project-template)
 
-You'll also need to run ```pdflatex``` with the ```--shell-escape``` option.
-See [this Stack Exchange post](http://tex.stackexchange.com/questions/99475/how-to-invoke-latex-with-the-shell-escape-flag-in-texmakerx) for details.
+##### Author
+John Walsh
+Software Development, Level 8
+GMIT
